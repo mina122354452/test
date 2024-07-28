@@ -9,16 +9,9 @@ services:
       - mongo
     env_file:
       - .env
-    # Connect using hostname 'mongo'
-    networks:
-      - app-network
 
   mongo:
     image: mongo:latest
-    networks:
-      - app-network
+
     ports:
       - "27017:27017"
-
-networks:
-  app-network:

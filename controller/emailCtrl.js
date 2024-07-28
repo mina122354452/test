@@ -6,7 +6,7 @@ const sendEmail = expressAsyncHandler(async (data) => {
     service: "gmail",
     auth: {
       // TODO: replace `user` and `pass` values from <https://forwardemail.net>
-      user: process.env.Email,
+      user: process.env.EMAIL,
       pass: process.env.password,
     },
   });

@@ -12,30 +12,33 @@ const {
 const validateMongoDbId = require("../utils/validateMongodbId");
 const Service = require("../models/serviceModel");
 const createUser = expressAsyncHandler(async (req, res) => {
-  const { firstname, lastname, email, password } = req.body;
-  const findUser = await User.findOne({ email });
-  if (!findUser) {
-    const newUser = await User.create({
-      firstname,
-      lastname,
-      email,
-
-      password,
-    });
-    if (newUser.emailConfirm === false) {
-      verifyEmailToken(req, res);
-    } else {
-      return res.status(201).json({
-        message: "User created",
+  try {
+    const { firstname, lastname, email, password } = req.body;
+    const findUser = await User.findOne({ email });
+    if (!findUser) {
+      const newUser = await User.create({
+        firstname,
+        lastname,
+        email,
+        password,
       });
-    }
-  } else {
-    if (findUser.emailConfirm === false) {
-      verifyEmailToken(req, res);
+      if (newUser.emailConfirm === false) {
+        verifyEmailToken(req, res);
+      } else {
+        return res.status(201).json({
+          message: "User created",
+        });
+      }
     } else {
-      //FIXME:cutsom error handler
-      throw new Error("user is already exist");
+      if (findUser.emailConfirm === false) {
+        verifyEmailToken(req, res);
+      } else {
+        throw new Error("user is already exist");
+      }
     }
+  } catch (error) {
+    console.log("Error details:", error);
+    res.status(500).json({ error: error.message });
   }
 });
 const loginUser = expressAsyncHandler(async (req, res) => {
